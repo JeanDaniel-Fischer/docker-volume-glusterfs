@@ -1,7 +1,5 @@
 # Docker volume plugin for GlusterFS
 
-# UNMAINTAINED: This library is not maintained anymore. Fork it, copy it or do what you please the the code, but this repository won't get updates and fixes.
-
 This plugin uses GlusterFS as distributed data storage for containers.
 
 [![TravisCI](https://travis-ci.org/calavera/docker-volume-glusterfs.svg)](https://travis-ci.org/calavera/docker-volume-glusterfs)
@@ -57,3 +55,7 @@ These volumes are replicated among all the peers in the cluster that you specify
 ## LICENSE
 
 MIT
+
+## Notes
+
+This is a fork of calavera/docker-volume-glusterfs. Since the original author stopped maintaining the plugin, and I think this plugin is useful, and would like to keep it alive. I'll fix issues I find, and welcome report issues, and I'll try to fix them if I can.
