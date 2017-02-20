@@ -14,6 +14,6 @@
     - $GOPATH/bin/glide install
   script:
     - go vet github.com/Gimi/docker-volume-glusterfs
-    - test -z "$(golint ./... | tee /dev/stderr)"
-    - test -z "$(gofmt -s -l . | tee /dev/stderr)"
-    - go test -v ./...
+    - test -z "$(golint github.com/Gimi/docker-volume-glusterfs | tee /dev/stderr)"
+    - test -z "$(gofmt -s -l . | grep -E '^[^(vendor)]' | tee /dev/stderr)"
+    - go test -v github.com/Gimi/docker-volume-glusterfs
