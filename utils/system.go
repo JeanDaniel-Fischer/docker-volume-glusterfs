@@ -8,10 +8,13 @@ import (
 	"strings"
 )
 
-const defaultGid = 0 // root
+const (
+	defaultGid      = 0 // root
+	dockerGroupName = "docker"
+)
 
 func GetGid() int {
-	cmd := exec.Command("grep", "^staff:", "/etc/group")
+	cmd := exec.Command("grep", "^"+dockerGroupName+":", "/etc/group")
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println(err)
