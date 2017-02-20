@@ -4,13 +4,16 @@
   notifications:
     email: false
   go:
-    - 1.5
+    - 1.6
+    - 1.7
+    - 1.8
     - tip
   install:
-    - go get -t ./...
+    - go get github.com/Masterminds/glide
     - go get github.com/golang/lint/golint
+    - $GOPATH/bin/glide install
   script:
-    - go vet ./...
+    - go vet github.com/Gimi/docker-volume-glusterfs
     - test -z "$(golint ./... | tee /dev/stderr)"
     - test -z "$(gofmt -s -l . | tee /dev/stderr)"
     - go test -v ./...

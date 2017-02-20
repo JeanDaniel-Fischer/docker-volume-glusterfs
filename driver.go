@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/calavera/docker-volume-glusterfs/rest"
+	"github.com/Gimi/docker-volume-glusterfs/rest"
 	"github.com/docker/go-plugins-helpers/volume"
 )
 
@@ -191,7 +191,7 @@ func (d *glusterfsDriver) unmountVolume(target string) error {
 }
 
 func (d glusterfsDriver) Capabilities(r volume.Request) volume.Response {
-    var res volume.Response
-    res.Capabilities = volume.Capability{Scope: "local"}
-    return res
+	var res volume.Response
+	res.Capabilities = volume.Capability{Scope: "local"}
+	return res
 }

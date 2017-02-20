@@ -1,0 +1,9 @@
+package: github.com/Gimi/docker-volume-glusterfs
+homepage: https://github.com/Gimi/docker-volume-glusterfs
+license: MIT
+owners:
+- name: Gimi Liang
+import:
+- package: github.com/docker/go-plugins-helpers
+  subpackages:
+  - volume
