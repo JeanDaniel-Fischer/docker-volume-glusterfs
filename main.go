@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/docker/go-plugins-helpers/volume"
+
+	"github.com/Gimi/docker-volume-glusterfs/utils"
 )
 
 const glusterfsID = "_glusterfs"
@@ -36,5 +38,5 @@ func main() {
 
 	d := newGlusterfsDriver(*root, *restAddress, *gfsBase, servers)
 	h := volume.NewHandler(d)
-	fmt.Println(h.ServeUnix("root", "glusterfs"))
+	fmt.Println(h.ServeUnix("glusterfs", utils.GetGid()))
 }

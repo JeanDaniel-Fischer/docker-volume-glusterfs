@@ -13,7 +13,7 @@
     - go get github.com/golang/lint/golint
     - $GOPATH/bin/glide install
   script:
-    - go vet github.com/Gimi/docker-volume-glusterfs
-    - test -z "$(golint github.com/Gimi/docker-volume-glusterfs | tee /dev/stderr)"
+    - go vet $($GOPATH/bin/glide nv)
+    - test -z "$(golint $($(GOPATH/bin/glide nv)) | tee /dev/stderr)"
     - test -z "$(gofmt -s -l . | grep -E '^[^(vendor)]' | tee /dev/stderr)"
-    - go test -v github.com/Gimi/docker-volume-glusterfs
+    - go test -v $($GOPATH/bin/glide nv)
