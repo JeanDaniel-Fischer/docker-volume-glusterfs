@@ -9,7 +9,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Gimi/docker-volume-glusterfs/rest"
+	"docker-volume-glusterfs/rest"
+
 	"github.com/docker/go-plugins-helpers/volume"
 )
 
@@ -27,14 +28,21 @@ type glusterfsDriver struct {
 }
 
 func newGlusterfsDriver(root, restAddress, gfsBase string, servers []string) glusterfsDriver {
-	d := glusterfsDriver{
-		root:    root,
-		servers: servers,
-		volumes: map[string]*volumeName{},
-		m:       &sync.Mutex{},
-	}
+	var restClient *rest.Client
 	if len(restAddress) > 0 {
-		d.restClient = rest.NewClient(restAddress, gfsBase)
+		restClient = rest.NewClient(restAddress, gfsBase)
+		peers, err := restClient.GetPeers()
+		if err == nil {
+			log.Println("Update peers list from rest")
+			servers = peers
+		}
+	}
+	d := glusterfsDriver{
+		root:       root,
+		servers:    servers,
+		volumes:    map[string]*volumeName{},
+		m:          &sync.Mutex{},
+		restClient: restClient,
 	}
 	return d
 }
@@ -145,9 +153,21 @@ func (d glusterfsDriver) Unmount(r volume.UnmountRequest) volume.Response {
 func (d glusterfsDriver) Get(r volume.Request) volume.Response {
 	d.m.Lock()
 	defer d.m.Unlock()
+	log.Println("Get volume", r.Name)
 	m := d.mountpoint(r.Name)
 	if s, ok := d.volumes[m]; ok {
 		return volume.Response{Volume: &volume.Volume{Name: s.name, Mountpoint: d.mountpoint(s.name)}}
+	} else {
+		d.m.Unlock()
+		res := d.Mount(volume.MountRequest{
+			Name: r.Name,
+		})
+		d.m.Lock()
+		if res.Err == "" {
+			if s, ok := d.volumes[m]; ok {
+				return volume.Response{Volume: &volume.Volume{Name: s.name, Mountpoint: d.mountpoint(s.name)}}
+			}
+		}
 	}
 
 	return volume.Response{Err: fmt.Sprintf("Unable to find volume mounted on %s", m)}

@@ -3,14 +3,17 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 )
 
 const (
+	peerPath         = "/api/1.0/peers"
 	volumesPath      = "/api/1.0/volumes"
 	volumeCreatePath = "/api/1.0/volume/%s"
 	volumeStopPath   = "/api/1.0/volume/%s/stop"
@@ -119,6 +122,45 @@ func (r Client) CreateVolume(name string, peers []string) error {
 	}
 
 	return responseCheck(resp)
+}
+
+// GetPeers list from remote
+func (r Client) GetPeers() ([]string, error) {
+	u := fmt.Sprintf("%s%s", r.addr, peerPath)
+	log.Println(u)
+
+	res, err := http.Get(u)
+	if err != nil {
+		return nil, err
+	}
+
+	var d peerResponse
+	if err := json.NewDecoder(res.Body).Decode(&d); err != nil {
+		return nil, err
+	}
+
+	if !d.Ok {
+		return nil, fmt.Errorf(d.Err)
+	}
+
+	peersName := make([]string, 0)
+	for _, peer := range d.Data {
+		if peer.Name == "localhost" {
+			regex, err := regexp.Compile("(?i)^https*\\://([^@]+@)*([^/\\:]+).*$")
+			if err != nil {
+				panic(err)
+			}
+			log.Println("localhost as peer means rest server, decode rest url")
+			matches := regex.FindStringSubmatch(r.addr)
+			log.Println(matches[2])
+			peersName = append(peersName, matches[2])
+		} else {
+			peersName = append(peersName, peer.Name)
+		}
+	}
+
+	log.Println("Peers found from rest", peersName)
+	return peersName, nil
 }
 
 // StopVolume stops the volume with the given name in the cluster.

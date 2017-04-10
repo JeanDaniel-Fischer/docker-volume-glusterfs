@@ -9,7 +9,7 @@ import (
 
 	"github.com/docker/go-plugins-helpers/volume"
 
-	"github.com/Gimi/docker-volume-glusterfs/utils"
+	"docker-volume-glusterfs/utils"
 )
 
 const glusterfsID = "_glusterfs"

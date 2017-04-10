@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Gimi/docker-volume-glusterfs/utils"
+	"docker-volume-glusterfs/utils"
 )
 
 func TestGetGid(t *testing.T) {
